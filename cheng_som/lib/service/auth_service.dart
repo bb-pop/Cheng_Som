@@ -61,11 +61,13 @@ class AuthService {
       print('User: ${user.email}, Is Admin: ${user.isAdmin}'); // แสดงค่าที่ได้รับ
 
       if (user.isAdmin) {
+        // นำไปยังหน้า HelloAdminScreen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HelloAdminScreen()),
         );
       } else {
+        // นำไปยังหน้าสำหรับผู้ใช้ทั่วไป
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HelloMemberScreen()),

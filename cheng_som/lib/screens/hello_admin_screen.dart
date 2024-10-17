@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../service/auth_service.dart'; // อย่าลืมนำเข้าฟังก์ชัน logout ที่คุณสร้างไว้
+import 'repairman_list_screen.dart'; // นำเข้าไฟล์สำหรับแสดงรายชื่อช่างซ่อม
 
 class HelloAdminScreen extends StatelessWidget {
   @override
@@ -21,6 +22,17 @@ class HelloAdminScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Hello Admin', style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20), // เพิ่มช่องว่าง
+            ElevatedButton(
+              onPressed: () {
+                // นำไปยังหน้ารายชื่อช่างซ่อม
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RepairmanListScreen()),
+                );
+              },
+              child: Text('View Repairman List'),
+            ),
             SizedBox(height: 20), // เพิ่มช่องว่าง
             ElevatedButton(
               onPressed: () {
