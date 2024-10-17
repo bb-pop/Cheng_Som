@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../service/repair_report_service.dart';
-import '../service/member_service.dart';
 import '../models/repair_report.dart';
-import 'add_repair_report_screen.dart';
-import 'edit_repair_report_screen.dart'; // นำเข้าไฟล์แก้ไขรายงานแจ้งซ่อม
+import 'admin_edit_repair_report_screen.dart'; // นำเข้าไฟล์แก้ไขของ admin
 
-class RepairReportListScreen extends StatefulWidget {
+class AdminRepairReportListScreen extends StatefulWidget {
   @override
-  _RepairReportListScreenState createState() => _RepairReportListScreenState();
+  _AdminRepairReportListScreenState createState() => _AdminRepairReportListScreenState();
 }
 
-class _RepairReportListScreenState extends State<RepairReportListScreen> {
+class _AdminRepairReportListScreenState extends State<AdminRepairReportListScreen> {
   List<RepairReport> repairReports = [];
-  Map<String, String> roomMap = {};
 
   @override
   void initState() {
     super.initState();
     fetchRepairReports();
-    fetchMembers();
   }
 
   Future<void> fetchRepairReports() async {
@@ -27,34 +23,16 @@ class _RepairReportListScreenState extends State<RepairReportListScreen> {
     setState(() {});
   }
 
-  Future<void> fetchMembers() async {
-    final members = await MemberService().getAllMembers();
-    setState(() {
-      roomMap = {for (var member in members) member.id: member.roomNumber};
-    });
-  }
-
-  Future<void> deleteRepairReport(String id) async {
-    await RepairReportService().deleteRepairReport(id);
-    fetchRepairReports(); // อัปเดตรายการหลังจากลบ
+  Future<void> deleteReport(String reportId) async {
+    await RepairReportService().deleteRepairReport(reportId);
+    fetchRepairReports(); // รีเฟรชหน้าหลังจากลบแล้ว
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Repair Reports'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddRepairReportScreen()),
-              );
-            },
-          ),
-        ],
+        title: Text('Admin: Repair Reports'),
       ),
       body: repairReports.isEmpty
           ? Center(child: CircularProgressIndicator())
@@ -66,8 +44,8 @@ class _RepairReportListScreenState extends State<RepairReportListScreen> {
                   title: Text(report.title),
                   subtitle: Text(
                     'รายละเอียด: ${report.description}\n'
-                    'เลขห้อง: ${report.roomNumber ?? 'Unknown Room'}\n'
-                    'เวลาที่เข้าซ่อม: ${DateFormat('dd/MM/yyyy').format(report.timeForRepairs)} '
+                    'เลขห้อง: ${report.roomNumber}\n'
+                    'เวลาที่เข้าซ่อม: ${DateFormat('dd/MM/yyyy').format(report.timeForRepairs)}\n '
                     'สถานะ: ${report.status}',
                   ),
                   trailing: Row(
@@ -79,16 +57,14 @@ class _RepairReportListScreenState extends State<RepairReportListScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditRepairReportScreen(report: report),
+                              builder: (context) => AdminEditRepairReportScreen(report: report),
                             ),
                           );
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete),
-                        onPressed: () {
-                          deleteRepairReport(report.id); // เรียกฟังก์ชันลบ
-                        },
+                        onPressed: () => deleteReport(report.id),
                       ),
                     ],
                   ),

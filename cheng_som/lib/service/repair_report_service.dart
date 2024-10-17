@@ -22,7 +22,7 @@ class RepairReportService {
     required String phoneNumber,
     required String firstName,
     required String responsibility,
-    String status = 'รอปนุมัติ', // ตั้งค่าเป็น "รอปนุมัติ"
+    String status = 'รอมัติ', // ตั้งค่าเป็น "รอปนุมัติ"
   }) async {
     await pb.collection('repair_report').create(body: {
       'time_for_repairs': timeForRepairs.toUtc().toIso8601String(),
@@ -61,5 +61,16 @@ class RepairReportService {
 
   Future<void> deleteRepairReport(String id) async {
     await pb.collection('repair_report').delete(id); // ใช้คำสั่ง delete เพื่อลบระเบียน
+  }
+
+  Future<void> editRepairReportForAdmin({
+    required String id,
+    required String responsibility,
+    required String status,
+  }) async {
+    await pb.collection('repair_report').update(id, body: {
+      'responsibility': responsibility, // ฟิลด์ช่างที่รับผิดชอบ
+      'status': status, // สถานะที่แก้ไขโดย admin
+    });
   }
 }
